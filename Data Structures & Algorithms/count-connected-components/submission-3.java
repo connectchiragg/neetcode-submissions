@@ -1,0 +1,54 @@
+class DSU {
+    int[] parent;
+    int[] size;
+    int components;
+
+    public DSU(int n){
+        parent = new int[n];
+        size = new int[n];
+        components = n;
+
+        for(int i = 0; i < n; i++){
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    public boolean union(int a, int b){
+        int rootA = find(a);
+        int rootB = find(b);
+
+        if(rootA == rootB) return false;
+        components--;
+
+        if(size[rootA] < size[rootB]){
+            parent[rootA] = rootB;
+            size[rootB] += size[rootA];
+        } else {
+            parent[rootB] = rootA;
+            size[rootA] += size[rootB];
+        }
+
+        return true;
+    }
+
+    public int find(int a){
+        if(a != parent[a]){
+            parent[a] = find(parent[a]);
+        }
+
+        return parent[a];
+    }
+}
+
+class Solution {
+    public int countComponents(int n, int[][] edges) {
+        DSU dsu = new DSU(n);
+
+        for(int[] edge : edges){
+            dsu.union(edge[0], edge[1]);
+        }
+
+        return dsu.components;
+    }
+}
